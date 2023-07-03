@@ -1,5 +1,6 @@
 # CPE
 Codes used for the paper "Conditional partial exchangeability: a probabilistic framework for multi-view clustering" by Beatrice Franzolini, Maria De Iorio, and Johan Eriksson
+####
 Conditional_t-HDP.R ->sorce code to conditional MCMC algorithms
 Enriched_NNIG_uni.R ->mcmc for enriched Dirichlet process with 10 layers normal kernel and normal inverse gamma base measure
 functions_to_overwrite_to_extract_cluster_configurations_fromLSBP.R -> used by Simulation_n3
