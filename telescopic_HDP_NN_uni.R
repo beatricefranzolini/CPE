@@ -2,7 +2,7 @@
 library(progress)#to draw the progress bar
 
 #markovian dependence for L layers, univariate layers
-#normal kernel and normal base
+#normal kernel and normal base,
 #var of the kernel is fixed to 1 and the mean of the base to 0
 #hyper are the two concentration parameters and the variance of the base
 #if alpharandom=TRUE the two first entries of hyper are only the initialization
@@ -33,7 +33,7 @@ telescopic_HDP_NN_uni = function(data, hyper=c(0.1, 0.1, 0.1),
     }
   }
   
-  s2 = hyper[3]
+  s2 = hyper[3] #variance of the base measure
   L = dim(data)[2] #number of layers
   n_tot = dim(data)[1] #number of items
   
@@ -41,7 +41,7 @@ telescopic_HDP_NN_uni = function(data, hyper=c(0.1, 0.1, 0.1),
   X = data 
   
   #RANDOM PROB.S
-  pim = array(NA, dim = c(H0, H, L)) #weights (in log scale)
+  pim = array(NA, dim = c(H0, H, L)) #weights (in log scale) 
   b = array(NA, dim = c(H0, H, L)) #sticks for pi
   
   pi0 = matrix(NA, nrow = H0, ncol = L) #weights of the common overall in HDP
@@ -51,21 +51,36 @@ telescopic_HDP_NN_uni = function(data, hyper=c(0.1, 0.1, 0.1),
   #PARTITION 
   m = matrix(NA, nrow = L, ncol = n_tot) #clustering configuration
   c = array(NA, dim = c(L, n_tot)) #auxiliary: tables per item
-  k = array(0, dim = c(L, H0*H)) #auxiliary: dishes per table
+  #c[l,i] is the table where item i sits, 
+  #the table labels are distinct across restaurants at different layers
+  #note that there are at most H tables in in each restaurant
+  #and at most H0 restaurants, 
+  #thus the maximum number of tables is H*H0 at each layer
+  k = array(0, dim = c(L, H0*H)) #auxiliary: dishes per table 
+  #k[l,t] is the dish served at table t at layer l 
   q = matrix(NA, nrow = L, ncol = H0) #dish freq
-  n = matrix(NA, nrow = L, ncol = H*H0)#table freq
+  #q[l,h] how many tables at layer l serve dish h
+  n = matrix(NA, nrow = L, ncol = H*H0) #table freq
+  #n[l,t] how many items sits at table t at layer l
   nbar = array(NA, dim = c(L, H0, H))#table freq remapped
+  #nbar[l,r,t] how many items sits at the t-th table in restaurant r at layer l
+  #those are remapped in the sense the here t is repeated across restaurants
   
-  m_saved = array(NA,c(totiter, L, n_tot))
+  m_saved = array(NA,c(totiter, L, n_tot)) #cluster allocation
   
   #initialize
   for(l in 1:L){
     m[l, ] = stats::kmeans(as.matrix(X[,l]),min(10,H0))$cluster
   }
-  c[1, ] = m[1, ]
-  for(l in 2:L){
+  c[1, ] = m[1, ] #at first layer set the tables to the cluster allocation, 
+  #cause there is a single restaurant
+  for(l in 2:L){ #at subsequent layer set tables to the finer cluster allocation,
+    #such that at different restaurants we do not have same label for two tables, 
+    #so that if two subjects eat the same dish but in two different restaurant 
+    #they are sitted to different tables
     c[l, ] = (m[l-1,]-1)*H + m[l, ]
   }
+  #finally set the dishes of each table so to obtain the cluster allocation
   for(l in 1:L){
     for (cc in 1:(H*H0)){
       if (cc %in% c[l,]){

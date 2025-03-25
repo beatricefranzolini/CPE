@@ -18,3 +18,6 @@ source("telescopic_HDP_NN_uni_3L1P.R") #not used
 source("telescopic_HDP_NNIW_multi_3L1P.R") #not used
 source("telescopic_HDP_NNIX_multi_3L1P.R") #used in metabolomics application
 
+#C. Variant with DP at first layer 
+source("telescopic_HDP_NN_uni_VariantwithDP.R") #used in simulation n.1 and n.2
+source("telescopic_HDP_NNIG_uni_VariantwithDP.R") #used in simulation n.3 and n.5
