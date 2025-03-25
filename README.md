@@ -16,7 +16,7 @@ The repository contains the following:
 
 `functions_to_overwrite_to_extract_cluster_configurations_fromLSBP.R` -> used by Simulation_n3.R
 
-`HDP.R' -> 			MCMC code for a standard HDP (as in Teh et. al)  
+`HDP.R` -> 			MCMC code for a standard HDP (as in Teh et. al)  
 
 `main_metabolomics.R` -> 		to run to get results on real data as presented in Section 7.2 of the main paper and Section S7 of the Supplement (real data and t-HDP model)
 
